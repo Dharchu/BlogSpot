@@ -181,4 +181,44 @@ router.post('/:id/comment', auth, async (req, res) => {
   }
 });
 
+// Get all posts by a specific user
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const posts = await Post.find({ author: req.params.userId })
+      .populate('author', 'name avatar')
+      .sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while fetching user posts' });
+  }
+});
+
+// Delete a comment
+router.delete('/:postId/comment/:commentId', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const comment = post.comments.id(req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // Check if the user is the comment author or the post author
+    if (comment.user.toString() !== req.user._id.toString() && post.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You are not authorized to delete this comment' });
+    }
+
+    comment.deleteOne();
+    await post.save();
+    res.json(post.comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while deleting comment' });
+  }
+});
+
 module.exports = router;

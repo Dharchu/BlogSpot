@@ -1,107 +1,112 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useMemo } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [imageBase64, setImageBase64] = useState("");
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
-
-  // Fetch user profile
-  const fetchProfile = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/users/me", {
-        headers: { Authorization: "Bearer " + token },
-      });
-      console.log("Profile data:", res.data);
-      setUser(res.data);
-      setName(res.data.name);
-      setBio(res.data.bio || "");
-    } catch (err) {
-      console.error("❌ Error fetching profile:", err.response?.data || err.message);
-      alert("Failed to load profile. Please login again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // File upload
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setImageBase64(reader.result);
-    reader.readAsDataURL(file);
-  };
-
-  // Save profile
-  const saveProfile = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.put(
-        "http://localhost:5000/api/users/me",
-        { name, bio, imageBase64 },
-        { headers: { Authorization: "Bearer " + token } }
-      );
-      alert("Profile updated successfully!");
-      setUser(res.data);
-      setImageBase64("");
-    } catch (err) {
-      console.error("❌ Error updating profile:", err.response?.data || err.message);
-      alert("Failed to update profile.");
-    }
-  };
+  const [hoveredButton, setHoveredButton] = useState(null);
+  // useMemo will prevent re-parsing on every render, stopping the infinite loop
+  const user = useMemo(() => JSON.parse(localStorage.getItem('user')), []);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    if (!user) {
+      navigate('/login');
+      return;
+    }
 
-  // Loading screen
-  if (loading) return <div style={{ textAlign: "center", marginTop: "40px" }}>Loading...</div>;
+    async function fetchUserPosts() {
+      if (!user?._id) return; // Don't fetch if user ID is missing
+      try {
+        const res = await axios.get(`http://localhost:5000/api/posts/user/${user._id}`);
+        setPosts(res.data);
+      } catch (err) {
+        console.error('Error fetching user posts:', err);
+      } finally {
+        setLoading(false); 
+      }
+    }
 
-  // If no user data
-  if (!user) return <div style={{ textAlign: "center" }}>No profile data found</div>;
+    fetchUserPosts();
+  }, [user, navigate]);
 
-  // UI
+  const handleDelete = async (postId) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setPosts(posts.filter(p => p._id !== postId));
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      alert('Failed to delete post.');
+    }
+  };
+
+  if (loading) return <div className="card">Loading profile...</div>;
+
   return (
-    <div style={{ maxWidth: 500, margin: "40px auto", textAlign: "center" }}>
-      <h2>My Profile</h2>
+    <div className="card" style={{ maxWidth: 900, margin: '16px auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+        <div className="profile-icon" style={{ width: 80, height: 80, fontSize: 36 }}>
+          {user.name[0]?.toUpperCase()}
+        </div>
+        <div>
+          <h1 style={{ margin: 0 }}>{user.name}</h1>
+          <p style={{ margin: 0, color: '#64748b' }}>{user.email}</p>
+        </div>
+      </div>
 
-      <img
-        src={imageBase64 || user.avatar || "https://via.placeholder.com/100"}
-        alt="avatar"
-        style={{
-          width: 100,
-          height: 100,
-          borderRadius: "50%",
-          objectFit: "cover",
-          marginBottom: 10,
-        }}
-      />
-
-      <form onSubmit={saveProfile}>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        <br />
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter name"
-          style={{ width: "100%", marginTop: 10 }}
-        />
-        <textarea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          placeholder="Enter bio"
-          style={{ width: "100%", marginTop: 10 }}
-        />
-        <br />
-        <button type="submit" style={{ marginTop: 10 }}>
-          Save Profile
-        </button>
-      </form>
+      <h2>My Posts</h2>
+      {posts.length === 0 ? (
+        <p>You haven't created any posts yet.</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {posts.map(post => (
+            <div key={post._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: '#f8fafc', borderRadius: 8 }}>
+              <Link to={`/post/${post._id}`} style={{ textDecoration: 'none', color: '#0f172a', fontWeight: 600 }}>
+                {post.title}
+              </Link>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <Link 
+                  to={`/create?edit=${post._id}`} 
+                  className="btn-sm btn-secondary"
+                  onMouseEnter={() => setHoveredButton(post._id)}
+                  onMouseLeave={() => setHoveredButton(null)}
+                  style={{
+                    ...editButtonStyle,
+                    ...(hoveredButton === post._id && editButtonHoverStyle)
+                  }}
+                >
+                  Edit
+                </Link>
+                <button onClick={() => handleDelete(post._id)} className="btn-sm btn-danger">
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+const editButtonStyle = {
+  textDecoration: 'none',
+  color: '#fff',
+  backgroundColor: '#6c757d', // A standard secondary button color
+  transition: 'background-color 0.2s ease-in-out',
+  // Replicating btn-sm styles
+  padding: '0.25rem 0.5rem',
+  fontSize: '0.875rem',
+  borderRadius: '0.2rem',
+  lineHeight: 1.5,
+};
+
+const editButtonHoverStyle = {
+  backgroundColor: '#5a6268', // A darker shade for hover
+};

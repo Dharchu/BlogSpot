@@ -8,6 +8,7 @@ export default function PostDetail() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const fetchPost = async () => {
     try {
@@ -27,12 +28,12 @@ export default function PostDetail() {
   const handleLike = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(
+      const res = await axios.post(
         `http://localhost:5000/api/posts/${id}/like`,
         {},
         { headers: { Authorization: "Bearer " + token } }
       );
-      fetchPost();
+      setPost(res.data);
     } catch (err) {
       console.error("Error liking post:", err);
     }
@@ -49,8 +50,7 @@ export default function PostDetail() {
       { headers: { Authorization: "Bearer " + token } }
     );
 
-    // ✅ Update full post with new one from server
-    setPost(res.data.post);
+    setPost(res.data);
     setText("");
   } catch (err) {
     console.error("Error posting comment:", err);
@@ -58,6 +58,22 @@ export default function PostDetail() {
     setPosting(false);
   }
 };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(
+        `http://localhost:5000/api/posts/${id}/comment/${commentId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // Refetch post to show updated comments
+      fetchPost();
+    } catch (err) {
+      console.error('Error deleting comment:', err);
+      alert('Failed to delete comment.');
+    }
+  };
 
   if (loading) return <div className="card">Loading...</div>;
   if (!post) return <div className="card">Post not found</div>;
@@ -78,7 +94,7 @@ export default function PostDetail() {
       )}
       <h1 style={{ marginTop: 12 }}>{post.title}</h1>
       <div style={{ color: "#64748b", fontSize: 13 }}>
-        {post.user?.username || "Unknown Author"} ·{" "}
+        {post.author?.name || "Unknown Author"} ·{" "}
         {new Date(post.createdAt).toLocaleDateString()}
       </div>
 
@@ -106,8 +122,21 @@ export default function PostDetail() {
                   marginBottom: 8,
                 }}
               >
-                <div style={{ fontWeight: 600 }}>
-                  {c.user?.username || "User"}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontWeight: 600 }}>
+                    {c.user?.name || "User"}
+                  </div>
+                  {currentUser && (c.user?._id === currentUser._id || post.author?._id === currentUser._id) && (
+                    <button 
+                      onClick={() => handleDeleteComment(c._id)}
+                      style={{
+                        background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 12
+                      }}
+                      title="Delete comment"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
                 <div style={{ marginTop: 6 }}>{c.text}</div>
                 <div

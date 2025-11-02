@@ -24,6 +24,7 @@ export default function Navbar() {
         {isAuthenticated ? (
           <>
             <NavLink to="/create" style={styles.navLink}>Create Post</NavLink>
+            <NavLink to="/profile" style={styles.navLink}>My Profile</NavLink>
             <span style={styles.navLink}>Hi, {user?.name || 'User'}</span>
             <button onClick={handleLogout} style={{...styles.navLink, ...styles.button}}>Logout</button>
           </>

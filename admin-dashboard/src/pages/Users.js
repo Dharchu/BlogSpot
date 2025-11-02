@@ -5,10 +5,15 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  function auth() {
+    const t = localStorage.getItem('token');
+    return t ? { Authorization: 'Bearer ' + t } : {};
+  }
+
   // ✅ Fetch all users from admin route
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/users");
+      const res = await axios.get("http://localhost:5000/api/admin/users", { headers: auth() });
       setUsers(res.data);
     } catch (err) {
       console.error("Failed to fetch users:", err);
@@ -23,7 +28,7 @@ const Users = () => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${id}`);
+      await axios.delete(`http://localhost:5000/api/admin/users/${id}`, { headers: auth() });
       setUsers(users.filter((u) => u._id !== id));
     } catch (err) {
       console.error("Failed to delete user:", err);
@@ -45,7 +50,7 @@ const Users = () => {
         <thead className="table-dark">
           <tr>
             <th>Email</th>
-            <th>Username</th>
+            <th>Name</th>
             <th style={{ width: "120px" }}>Actions</th>
           </tr>
         </thead>
@@ -53,7 +58,7 @@ const Users = () => {
           {users.map((u) => (
             <tr key={u._id}>
               <td>{u.email}</td>
-              <td>{u.username}</td>
+              <td>{u.name}</td>
               <td>
                 <button
                   className="btn btn-danger btn-sm"
