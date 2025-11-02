@@ -1,0 +1,10 @@
+/* admin-dashboard/src/styles.css */
+body{font-family:Inter,Arial,sans-serif;background:#f8fafc;margin:0;color:#0f172a;}
+.header{background:white;padding:12px 20px;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
+.container{max-width:1100px;margin:16px auto;padding:0 16px;}
+.card{background:white;border-radius:12px;padding:16px;box-shadow:0 8px 20px rgba(2,6,23,0.06);}
+.table{width:100%;border-collapse:collapse;}
+.table th, .table td{padding:10px;border-bottom:1px solid #eee;text-align:left;}
+.btn{background:#1e3a8a;color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;}
+aside a{display:block;padding:10px;border-radius:8px;text-decoration:none;color:#0f172a;margin-bottom:6px;}
+aside a:hover{background:#eef2ff;}

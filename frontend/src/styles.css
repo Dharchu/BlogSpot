@@ -1,0 +1,19 @@
+/* frontend/src/styles.css */
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f6f8fb;margin:0;color:#0f172a;}
+.container{max-width:980px;margin:20px auto;padding:0 16px;}
+.header{background:white;padding:12px 20px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 18px rgba(15,23,42,0.06);}
+.brand{display:flex;align-items:center;gap:12px;}
+.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#1e3a8a,#2563eb);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;}
+.navlinks{display:flex;gap:12px;align-items:center;}
+.navlink{padding:8px 12px;border-radius:8px;color:#111827;text-decoration:none;font-weight:600;}
+.navlink:hover{background:#eef2ff;color:#1e3a8a;transform:translateY(-1px);transition:all .15s;}
+.btn{background:#1e40af;color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;}
+.card{background:white;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.04);margin-bottom:16px;}
+.profile-icon{width:40px;height:40px;border-radius:9999px;background:#eef2ff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.dropdown{position:absolute;right:24px;top:68px;background:white;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.08);overflow:hidden;}
+.dropdown a{display:block;padding:10px 14px;text-decoration:none;color:#0f172a;}
+.dropdown a:hover{background:#f1f5f9;}
+.input, textarea{padding:10px;border-radius:8px;border:1px solid #e6e6e6;width:100%;}
+.post-actions button{margin-right:8px;}
+.categories{display:flex;gap:8px;flex-wrap:wrap;}
+.category-badge{background:#eef2ff;color:#1e3a8a;padding:6px 10px;border-radius:999px;font-size:13px;}
