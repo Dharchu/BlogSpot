@@ -17,12 +17,14 @@ services:
 
   - type: static_site
     name: blogspot-frontend
+    repo: https://github.com/Dharchu/BlogSpot.git
     rootDir: ./frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
 
   - type: static_site
     name: blogspot-admin
+    repo: https://github.com/Dharchu/BlogSpot.git
     rootDir: ./admin-dashboard
     buildCommand: npm install && npm run build
     staticPublishPath: build
