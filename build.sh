@@ -6,12 +6,14 @@ set -e
 echo "### Building frontend ###"
 cd frontend
 npm install
+chmod +x ./node_modules/.bin/react-scripts
 npm run build
 cd ..
 
 echo "### Building admin-dashboard ###"
 cd admin-dashboard
 npm install
+chmod +x ./node_modules/.bin/react-scripts
 npm run build
 cd ..
 
