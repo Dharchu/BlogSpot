@@ -15,9 +15,8 @@ services:
       - key: JWT_SECRET
         generateValue: true # Render will generate a random string
 
-  - type: static
+  - type: static_site
     name: blogspot-frontend
-    env: static
     repo: https://github.com/Dharchu/BlogSpot.git
     rootDir: ./frontend
     buildCommand: npm install && npm run build
@@ -29,9 +28,8 @@ services:
           name: blogspot-backend
           property: url
 
-  - type: static
+  - type: static_site
     name: blogspot-admin
-    env: static
     repo: https://github.com/Dharchu/BlogSpot.git
     rootDir: ./admin-dashboard
     buildCommand: npm install && npm run build
