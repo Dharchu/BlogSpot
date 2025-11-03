@@ -14,17 +14,3 @@ services:
         sync: false # This will be set in the Render dashboard
       - key: JWT_SECRET
         generateValue: true # Render will generate a random string
-
-  - type: static_site
-    name: blogspot-frontend
-    repo: https://github.com/Dharchu/BlogSpot.git
-    rootDir: ./frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: build
-
-  - type: static_site
-    name: blogspot-admin
-    repo: https://github.com/Dharchu/BlogSpot.git
-    rootDir: ./admin-dashboard
-    buildCommand: npm install && npm run build
-    staticPublishPath: build
