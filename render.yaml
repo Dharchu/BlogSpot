@@ -19,10 +19,10 @@ services:
     name: blogspot-frontend
     rootDir: ./frontend
     buildCommand: npm install && npm run build
-    publishDir: build
+    staticPublishPath: build
 
   - type: static_site
     name: blogspot-admin
     rootDir: ./admin-dashboard
     buildCommand: npm install && npm run build
-    publishDir: build
+    staticPublishPath: build
