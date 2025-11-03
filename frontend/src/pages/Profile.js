@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function Profile() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ export default function Profile() {
     async function fetchUserPosts() {
       if (!user?._id) return; // Don't fetch if user ID is missing
       try {
-        const res = await axios.get(`http://localhost:5000/api/posts/user/${user._id}`);
+        const res = await axios.get(`${API_URL}/api/posts/user/${user._id}`);
         setPosts(res.data);
       } catch (err) {
         console.error('Error fetching user posts:', err);
@@ -36,7 +38,7 @@ export default function Profile() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+      await axios.delete(`${API_URL}/api/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts(posts.filter(p => p._id !== postId));

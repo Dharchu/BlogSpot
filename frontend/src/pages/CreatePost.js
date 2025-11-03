@@ -5,6 +5,8 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function CreatePost(){
   const [title,setTitle]=useState(''); const [content,setContent]=useState(''); const [image,setImage]=useState(null); const [category,setCategory]=useState('Tech');
   const navigate = useNavigate();
@@ -12,7 +14,7 @@ export default function CreatePost(){
   const params = new URLSearchParams(location.search);
   const editId = params.get('edit');
 
-  useEffect(()=>{ if(editId){ axios.get('http://localhost:5000/api/posts/'+editId).then(r=>{ setTitle(r.data.title); setContent(r.data.content); setCategory(r.data.category||'Tech'); }); } },[editId]);
+  useEffect(()=>{ if(editId){ axios.get(`${API_URL}/api/posts/${editId}`).then(r=>{ setTitle(r.data.title); setContent(r.data.content); setCategory(r.data.category||'Tech'); }); } },[editId]);
 
   async function submit(e){
     e.preventDefault();
@@ -26,10 +28,10 @@ export default function CreatePost(){
       }
       const token = localStorage.getItem('token');
       if(editId){
-        await axios.put('http://localhost:5000/api/posts/'+editId, { title, content, imageBase64, category }, { headers: { Authorization: 'Bearer ' + token } });
+        await axios.put(`${API_URL}/api/posts/${editId}`, { title, content, imageBase64, category }, { headers: { Authorization: 'Bearer ' + token } });
         alert('Post updated'); navigate('/');
       } else {
-        await axios.post('http://localhost:5000/api/posts', { title, content, imageBase64, category }, { headers: { Authorization: 'Bearer ' + token } });
+        await axios.post(`${API_URL}/api/posts`, { title, content, imageBase64, category }, { headers: { Authorization: 'Bearer ' + token } });
         alert('Post created'); navigate('/');
       }
     }catch(err){ console.error(err); alert('Error'); }

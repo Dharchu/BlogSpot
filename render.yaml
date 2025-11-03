@@ -1,0 +1,51 @@
+# render.yaml
+
+databases:
+  - name: blogspot-db
+    databaseName: blogspot
+    ipAllowList: [] 
+
+services:
+  - type: web
+    name: blogspot-backend
+    env: node
+    runtime: node
+    repo: https://github.com/Dharchu/BlogSpot.git 
+    rootDir: ./backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        fromDatabase:
+          name: blogspot-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true # Render will generate a random string
+
+  - type: static
+    name: blogspot-frontend
+    env: static
+    repo: https://github.com/Dharchu/BlogSpot.git
+    rootDir: ./frontend
+    buildCommand: npm install && npm run build
+    publishDir: build
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: blogspot-backend
+          property: url
+
+  - type: static
+    name: blogspot-admin
+    env: static
+    repo: https://github.com/Dharchu/BlogSpot.git
+    rootDir: ./admin-dashboard
+    buildCommand: npm install && npm run build
+    publishDir: build
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: blogspot-backend
+          property: url

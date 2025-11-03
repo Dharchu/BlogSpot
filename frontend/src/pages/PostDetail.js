@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function PostDetail() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
@@ -12,7 +14,7 @@ export default function PostDetail() {
 
   const fetchPost = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/posts/${id}`);
+      const res = await axios.get(`${API_URL}/api/posts/${id}`);
       setPost(res.data);
     } catch (err) {
       console.error("Error fetching post:", err);
@@ -29,7 +31,7 @@ export default function PostDetail() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        `http://localhost:5000/api/posts/${id}/like`,
+        `${API_URL}/api/posts/${id}/like`,
         {},
         { headers: { Authorization: "Bearer " + token } }
       );
@@ -45,7 +47,7 @@ export default function PostDetail() {
   try {
     const token = localStorage.getItem("token");
     const res = await axios.post(
-      `http://localhost:5000/api/posts/${id}/comment`,
+      `${API_URL}/api/posts/${id}/comment`,
       { text },
       { headers: { Authorization: "Bearer " + token } }
     );
@@ -64,7 +66,7 @@ export default function PostDetail() {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://localhost:5000/api/posts/${id}/comment/${commentId}`,
+        `${API_URL}/api/posts/${id}/comment/${commentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // Refetch post to show updated comments
