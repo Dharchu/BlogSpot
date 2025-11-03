@@ -1,10 +1,5 @@
 # render.yaml
 
-databases:
-  - name: blogspot-db
-    databaseName: blogspot
-    ipAllowList: [] 
-
 services:
   - type: web
     name: blogspot-backend
@@ -16,9 +11,7 @@ services:
     startCommand: npm start
     envVars:
       - key: MONGO_URI
-        fromDatabase:
-          name: blogspot-db
-          property: connectionString
+        sync: false # This will be set in the Render dashboard
       - key: JWT_SECRET
         generateValue: true # Render will generate a random string
 
