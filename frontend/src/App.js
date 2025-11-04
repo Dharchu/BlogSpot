@@ -1,6 +1,6 @@
 // frontend/src/App.js
 import React, {useState, useEffect} from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -56,20 +56,14 @@ function Header(){
   );
 }
 
-// This component contains the layout and routes for the main user-facing application
+// This is a Layout Route component. It renders the Header and an <Outlet>.
+// The <Outlet> will be replaced by the matched child route component (e.g., Home, Login).
 function MainAppLayout() {
   return (
     <>
       <Header />
       <div className="container" style={{paddingTop:16}}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/create" element={<CreatePost />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/post/:id" element={<PostDetail />} />
-        </Routes>
+        <Outlet />
       </div>
     </>
   );
@@ -79,8 +73,15 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/admin/*" element={null} /> {/* This route explicitly does nothing for /admin paths */}
-        <Route path="/*" element={<MainAppLayout />} /> {/* This route handles all other paths */}
+        <Route path="/admin/*" element={null} /> {/* This route explicitly does nothing for /admin paths. */}
+        <Route element={<MainAppLayout />}> {/* All child routes will be rendered inside the MainAppLayout's <Outlet>. */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/create" element={<CreatePost />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/post/:id" element={<PostDetail />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
