@@ -2,13 +2,15 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function Login(){
   const [email,setEmail]=useState(''); const [password,setPassword]=useState('');
   const navigate = useNavigate();
   async function submit(e){
     e.preventDefault();
     try{
-      const res = await axios.post('http://localhost:5000/api/users/login',{email,password});
+      const res = await axios.post(`${API_URL}/api/users/login`,{email,password});
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       if(res.data.user.role !== 'admin'){ alert('Not admin'); return; }
