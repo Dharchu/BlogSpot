@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function Posts() {
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState(null);
@@ -15,7 +17,7 @@ export default function Posts() {
   async function fetchPosts() {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/posts', {
+      const res = await axios.get(`${API_URL}/api/admin/posts`, {
         headers: auth(),
       });
       const data = Array.isArray(res.data) ? res.data : res.data.data || [];
@@ -35,7 +37,7 @@ export default function Posts() {
   async function deletePost(id) {
     if (!window.confirm('Are you sure you want to delete this post?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/posts/${id}`, {
+      await axios.delete(`${API_URL}/api/admin/posts/${id}`, {
         headers: auth(),
       });
       alert('Post deleted successfully');
@@ -59,7 +61,7 @@ export default function Posts() {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/api/admin/posts/${editingPost._id}`,
+        `${API_URL}/api/admin/posts/${editingPost._id}`,
         form,
         { headers: auth() }
       );

@@ -1,6 +1,6 @@
 // admin-dashboard/src/App.js
 import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
@@ -14,10 +14,12 @@ function RequireAuth({children}){
 
 export default function App(){
   return (
-    <Routes>
-      <Route path="/login" element={<Login/>} />
-      <Route path="/*" element={<RequireAuth><Layout/></RequireAuth>} />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login/>} />
+        <Route path="/*" element={<RequireAuth><Layout/></RequireAuth>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

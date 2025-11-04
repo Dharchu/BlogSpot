@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+ 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
 
   async function fetchPosts() {
     try {
-      const res = await axios.get(`${API_URL}/api/posts`);
+      const res = await axios.get(`${API_URL}/api/posts`); // This line was correct, but ensuring consistency.
       setPosts(Array.isArray(res.data) ? res.data : []);
       const dynamicCats = Array.from(new Set(res.data.map(p => p.category || 'General')));
       const predefinedCats = ['Technology', 'Lifestyle', 'Travel', 'Food', 'Business'];

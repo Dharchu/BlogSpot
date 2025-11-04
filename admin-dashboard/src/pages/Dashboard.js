@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function Dashboard() {
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,13 +20,13 @@ export default function Dashboard() {
       setLoading(true);
       try {
         // fetch users
-        const u = await axios.get('http://localhost:5000/api/admin/users', { headers: auth() });
+        const u = await axios.get(`${API_URL}/api/admin/users`, { headers: auth() });
         // API might return { total, users } or an array; normalize
         const usersData = Array.isArray(u.data) ? u.data : (u.data.users || u.data || []);
         setUsers(usersData);
 
         // fetch posts
-        const p = await axios.get('http://localhost:5000/api/admin/posts', { headers: auth() });
+        const p = await axios.get(`${API_URL}/api/admin/posts`, { headers: auth() });
         // API might return an array or { total, posts }
         const postsData = Array.isArray(p.data) ? p.data : (p.data.posts || p.data || []);
         setPosts(postsData);
