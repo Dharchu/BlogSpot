@@ -1,6 +1,6 @@
 // admin-dashboard/src/App.js
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
@@ -14,13 +14,11 @@ function RequireAuth({children}){
 
 export default function App(){
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login/>} />
-        <Route path="/*" element={<RequireAuth><Layout/></RequireAuth>} />
-      </Routes>
-    </BrowserRouter>
-  )
+    <Routes>
+      <Route path="/login" element={<Login/>} />
+      <Route path="/*" element={<RequireAuth><Layout/></RequireAuth>} />
+    </Routes>
+  );
 }
 
 function Layout(){
@@ -30,10 +28,10 @@ function Layout(){
     <div>
       <header className="header"><div className="container" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><strong>Admin Dashboard</strong></div><div><button onClick={logout} className="btn">Logout</button></div></div></header>
       <div className="container" style={{display:'flex',gap:16,marginTop:16}}>
-        <aside style={{width:220}} className="card">
-          <a href="/">Overview</a>
-          <a href="/users">Users</a>
-          <a href="/posts">Posts</a>
+        <aside style={{width:220}} className="card" id="admin-sidebar">
+          <Link to="/">Overview</Link>
+          <Link to="/users">Users</Link>
+          <Link to="/posts">Posts</Link>
         </aside>
         <main style={{flex:1}}>
           <Routes>
