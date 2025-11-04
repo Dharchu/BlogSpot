@@ -20,7 +20,6 @@ mongoose
 
 app.use('/api/users', require('./src/routes/users'));
 app.use('/api/posts', require('./src/routes/posts'));
-app.use('/api/admin', require('./src/routes/admin'));
 
 app.get('/', (req, res) => res.send('🚀 BlogSpot API is running...'));
 
