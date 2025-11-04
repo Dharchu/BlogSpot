@@ -15,7 +15,7 @@ const Users = () => {
   // ✅ Fetch all users from admin route
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/admin/users`, { headers: auth() });
+      const res = await axios.get(`${API_URL}/api/users`, { headers: auth() });
       setUsers(res.data);
     } catch (err) {
       console.error("Failed to fetch users:", err);
@@ -30,7 +30,7 @@ const Users = () => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
     try {
-      await axios.delete(`${API_URL}/api/admin/users/${id}`, { headers: auth() });
+      await axios.delete(`${API_URL}/api/users/${id}`, { headers: auth() });
       setUsers(users.filter((u) => u._id !== id));
     } catch (err) {
       console.error("Failed to delete user:", err);

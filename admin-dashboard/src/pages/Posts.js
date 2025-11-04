@@ -17,7 +17,7 @@ export default function Posts() {
   async function fetchPosts() {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/api/admin/posts`, {
+      const res = await axios.get(`${API_URL}/api/posts`, {
         headers: auth(),
       });
       const data = Array.isArray(res.data) ? res.data : res.data.data || [];
@@ -37,7 +37,7 @@ export default function Posts() {
   async function deletePost(id) {
     if (!window.confirm('Are you sure you want to delete this post?')) return;
     try {
-      await axios.delete(`${API_URL}/api/admin/posts/${id}`, {
+      await axios.delete(`${API_URL}/api/posts/${id}`, {
         headers: auth(),
       });
       alert('Post deleted successfully');
@@ -61,7 +61,7 @@ export default function Posts() {
     e.preventDefault();
     try {
       await axios.put(
-        `${API_URL}/api/admin/posts/${editingPost._id}`,
+        `${API_URL}/api/posts/${editingPost._id}`,
         form,
         { headers: auth() }
       );
