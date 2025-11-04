@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin'); // We need to import the admin middleware
 const User = require('../models/User');
 const cloudinary = require('../config/cloudinary');
 
@@ -68,6 +69,31 @@ router.put('/me', auth, async (req, res) => {
     await user.save();
 
     res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET ALL USERS (for admin dashboard)
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find().select('-password'); // find all users, exclude password
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// DELETE A USER (Admin only)
+router.delete('/:id', auth, admin, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    await user.deleteOne();
+    res.json({ message: 'User deleted successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
