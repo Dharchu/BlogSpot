@@ -20,13 +20,13 @@ export default function Dashboard() {
       setLoading(true);
       try {
         // fetch users
-        const u = await axios.get(`${API_URL}/api/admin/users`, { headers: auth() });
+        const u = await axios.get(`${API_URL}/api/users`, { headers: auth() });
         // API might return { total, users } or an array; normalize
         const usersData = Array.isArray(u.data) ? u.data : (u.data.users || u.data || []);
         setUsers(usersData);
 
         // fetch posts
-        const p = await axios.get(`${API_URL}/api/admin/posts`, { headers: auth() });
+        const p = await axios.get(`${API_URL}/api/posts`, { headers: auth() });
         // API might return an array or { total, posts }
         const postsData = Array.isArray(p.data) ? p.data : (p.data.posts || p.data || []);
         setPosts(postsData);
