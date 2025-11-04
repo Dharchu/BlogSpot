@@ -76,7 +76,7 @@ router.put('/me', auth, async (req, res) => {
 });
 
 // GET ALL USERS (for admin dashboard)
-router.get('/', async (req, res) => {
+router.get('/', auth, admin, async (req, res) => { // Let's protect this route properly
   try {
     const users = await User.find().select('-password'); // find all users, exclude password
     res.json(users);
