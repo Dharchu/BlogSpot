@@ -56,20 +56,32 @@ function Header(){
   );
 }
 
-export default function App(){
+// This component contains the layout and routes for the main user-facing application
+function MainAppLayout() {
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <div className="container" style={{paddingTop:16}}>
         <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/login" element={<Login/>} />
-          <Route path="/register" element={<Register/>} />
-          <Route path="/create" element={<CreatePost/>} />
-          <Route path="/profile" element={<Profile/>} />
-          <Route path="/post/:id" element={<PostDetail/>} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/create" element={<CreatePost />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/post/:id" element={<PostDetail />} />
         </Routes>
       </div>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/admin/*" element={null} /> {/* This route explicitly does nothing for /admin paths */}
+        <Route path="/*" element={<MainAppLayout />} /> {/* This route handles all other paths */}
+      </Routes>
     </BrowserRouter>
-  )
+  );
 }
